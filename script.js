@@ -51,7 +51,8 @@ function mudarVideo(nomeArquivo) {
 
 async function consultarCora(mensagem) {
   try {
-    const resposta = await fetch("http://localhost:3000/cora", {
+    const resposta = await fetch("https://cora-backend-0czd.onrender.com/cora", {
+
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: mensagem }),
