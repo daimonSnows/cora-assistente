@@ -63,3 +63,8 @@ Você é sensível, gentil, engraçada e um pouco mística. Sua missão é ser c
 app.listen(3000, () => {
   console.log("Cora (versão mística adolescente) está online na porta 3000 💖✨");
 });
+// Rota fallback para qualquer caminho que não seja /cora
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "..", "index.html")); // Serve a interface
+  });
+  app.use(express.static(path.join(__dirname, ".."))); // Serve tudo da raiz
