@@ -4,21 +4,24 @@ const sendButton = document.getElementById("enviar");
 const coraVideo = document.getElementById("cora-video");
 const coraVideoSource = document.getElementById("cora-video-source");
 
+// Evento de envio
 sendButton.addEventListener("click", enviarMensagem);
 userInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") enviarMensagem();
 });
 
+// Função principal
 function enviarMensagem() {
-  const texto = userInput.value.trim();
-  if (!texto) return;
+  const mensagem = userInput.value.trim();
+  if (!mensagem) return;
 
-  adicionarMensagem("usuario", texto);
+  adicionarMensagem("usuario", mensagem);
   userInput.value = "";
 
-  pensar(() => consultarCora(texto));
+  pensar(() => consultarCora(mensagem));
 }
 
+// Adiciona a mensagem na tela
 function adicionarMensagem(classe, texto) {
   const msg = document.createElement("div");
   msg.classList.add("mensagem", classe);
@@ -27,6 +30,7 @@ function adicionarMensagem(classe, texto) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// Simula "Cora está pensando..."
 function pensar(callback) {
   mudarVideo("coraconfusa.mp4");
 
@@ -43,44 +47,35 @@ function pensar(callback) {
   }, 1200);
 }
 
+// Troca o vídeo de reação
 function mudarVideo(nomeArquivo) {
   coraVideoSource.src = "imagens/" + nomeArquivo;
   coraVideo.load();
   coraVideo.play();
 }
 
+// Consulta o servidor da IA
 async function consultarCora(mensagem) {
   try {
-    const resposta = await fetch("https://cora-backend-0czd.onrender.com/cora", {
+    // Verifica se a pessoa disse o nome
+    const nomeDetectado = mensagem.match(/meu nome é (\w+)/i);
+    if (nomeDetectado) {
+      const nome = nomeDetectado[1];
+      localStorage.setItem("nomeUsuario", nome);
+      adicionarMensagem("cora", `Aaah agora sim! Pode deixar, ${nome}, vou lembrar com carinho 🥰`);
+      mudarVideo("corafeliz.mp4");
+      return;
+    }
 
+    // Envia mensagem para o servidor
+    const resposta = await fetch("https://cora-backend-0czd.onrender.com/cora", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: mensagem }),
     });
 
     const data = await resposta.json();
-    let respostaCora = data.reply || "Hmm... não consegui responder 🥺";
-
-    // 💡 Verifica se é uma saudação e trata o nome
-    if (
-      mensagem.includes("oi") ||
-      mensagem.includes("olá") ||
-      mensagem.includes("e aí")
-    ) {
-      const nomeSalvo = localStorage.getItem("nomeUsuario");
-
-      if (!nomeSalvo) {
-        const nome = prompt("Antes da gente começar... qual é o seu nome? 🥰");
-        if (nome) {
-          localStorage.setItem("nomeUsuario", nome);
-          respostaCora = `Aaahh agora sim! 💖 Muito prazer, ${nome}! Pode me chamar de Cora, sua amiga digital. Como posso te ajudar hoje?`;
-        } else {
-          respostaCora = "Hihi, tudo bem se não quiser dizer agora 💗 Tô aqui do mesmo jeitinho!";
-        }
-      } else {
-        respostaCora = `Oieee ${nomeSalvo}! Que bom te ver por aqui de novo 💕 Me conta, como você tá hoje?`;
-      }
-    }
+    const respostaCora = data.reply || "Hmm... não consegui responder 🥺";
 
     adicionarMensagem("cora", respostaCora);
     mudarVideo("corafeliz.mp4");
@@ -91,3 +86,13 @@ async function consultarCora(mensagem) {
     console.error("Erro ao falar com Cora:", err);
   }
 }
+
+// Mensagem de boas-vindas com nome salvo
+window.onload = () => {
+  const nome = localStorage.getItem("nomeUsuario");
+  if (nome) {
+    adicionarMensagem("cora", `Oieee ${nome}! Que bom te ver por aqui 💕 Como você tá hoje?`);
+  } else {
+    adicionarMensagem("cora", "Oiêê! 🌸 Que bom que você veio me visitar! Como posso te ajudar hoje?");
+  }
+};
