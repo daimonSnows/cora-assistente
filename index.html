@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cora - Assistente Virtual</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Correção do vídeo da Cora para responsividade */
+    .cora-container {
+      width: 100%;
+      max-width: 220px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid #ff9aa2;
+      margin-bottom: 15px;
+    }
+
+    .cora-container video {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
   <div class="chat-container">
@@ -13,12 +32,33 @@
         <source id="cora-video-source" src="imagens/coranorma.mp4" type="video/mp4" />
       </video>
     </div>
+
     <div class="chat-box" id="chat"></div>
+
     <div class="input-area">
       <input type="text" id="mensagem" placeholder="Fale com a Cora..." />
       <button id="enviar">Enviar</button>
     </div>
   </div>
-  <script src="script.js"></script>
+
+  <!-- Botão de ajuda -->
+  <button id="botao-ajuda">?</button>
+
+  <!-- Tooltip da Cora -->
+  <div id="tooltip-cora">
+    <strong>Oi! Eu posso te responder sobre:</strong><br><br>
+    💬 <strong>Saudações</strong> — "oi", "olá", "fala aí", "cheguei"<br>
+    😊 <strong>Sentimentos</strong> — "feliz", "triste", "bravo", "tô bem"<br>
+    💼 <strong>Trabalho</strong> — "emprego", "vaga", "meu chefe", "trampo"<br>
+    🎮 <strong>Hobbies</strong> — "gosto de", "tempo livre", "minha paixão"<br>
+    ✨ <strong>Zodíaco</strong> — "meu signo", "sou de", "leão", "libra"<br>
+    🤣 <strong>Piadas</strong> — "me faz rir", "conta uma piada", "trocadilho"<br>
+    🧙‍♀️ <strong>Criação</strong> — "quem te fez", "quem é a Daimon"<br>
+    ❓ <strong>Ajuda</strong> — "me ajuda", "socorro", "buguei"
+  </div>
+
+  <!-- Scripts -->
+  <script src="banco_respostas.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
